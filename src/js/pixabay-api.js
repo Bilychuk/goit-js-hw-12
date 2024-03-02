@@ -16,7 +16,7 @@ export async function fetchImages(query, per_page, page) {
         iziToast.error({
             title: 'Error',
             titleColor: '#fff',
-            message: 'Error while fetching images from Pixabay!',
+            message: 'Error while fetching images from Pixabay!!!',
             messageColor: '#fafafb',
             messageSize: '16px',
             backgroundColor: '#ef4040',

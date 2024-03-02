@@ -10,7 +10,6 @@ const searchForm = document.querySelector(".form");
 const gallery = document.querySelector(".gallery");
 const loader = document.querySelector(".loader");
 const loadMoreBtn = document.querySelector(".load-button");
-const imageCard = document.querySelector('.gallery-item');
 const imageLightbox = new SimpleLightbox('.gallery .gallery-link', {
     captionsData: 'alt',
 }); 
@@ -47,6 +46,7 @@ loadMoreBtn.addEventListener('click', event => {
             const markup = createGalleryMarkup(data.hits);
             gallery.insertAdjacentHTML("beforeend", markup);
             loader.classList.add('is-hidden');
+            const imageCard = document.querySelector('.gallery-item');
             const rect = imageCard.getBoundingClientRect().height;
             window.scrollBy({
                 top: rect * 2,
@@ -78,6 +78,7 @@ function onSubmit(event) {
     current_query = query;
 
     if (!query) {
+        loader.classList.add("is-hidden");
         iziToast.error({
                 title: 'Error',
                 titleColor: '#fff',
