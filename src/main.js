@@ -24,15 +24,9 @@ function selectImage(event) {
     }
 }
 
-searchForm.addEventListener("submit", onSubmit);
-
-loadMoreBtn.addEventListener('click', event => { 
-    loader.classList.remove('is-hidden');
-    current_page++;
-    fetchImages(current_query, 15, current_page)
-        .then(data => {
-            const currentHitsAmount = current_page * 15;
-                if (currentHitsAmount > data.totalHits) {
+function endListNotification(data, current_page) {
+    const currentHitsAmount = current_page * 15;
+                if (data.totalHits <= currentHitsAmount) {
                     loadMoreBtn.classList.add('is-hidden');
                     iziToast.warning({
                         message: "We're sorry, but you've reached the end of search results.",
@@ -43,9 +37,20 @@ loadMoreBtn.addEventListener('click', event => {
                         maxWidth: '432px',
                     })
                 }
+}
+
+searchForm.addEventListener("submit", onSubmit);
+
+loadMoreBtn.addEventListener('click', event => { 
+    loader.classList.remove('is-hidden');
+    selectImage(event);
+    current_page++;
+    fetchImages(current_query, 15, current_page)
+        .then(data => {
+            endListNotification(data, current_page);
             const markup = createGalleryMarkup(data.hits);
             gallery.insertAdjacentHTML("beforeend", markup);
-            loader.classList.add('is-hidden');
+            imageLightbox.refresh();
             const imageCard = document.querySelector('.gallery-item');
             const rect = imageCard.getBoundingClientRect().height;
             window.scrollBy({
@@ -66,11 +71,15 @@ loadMoreBtn.addEventListener('click', event => {
                 maxWidth: '432px',
             }) 
         })
+        .finally(() => {
+            loader.classList.add("is-hidden");   
+        })
 })
 
 function onSubmit(event) {
     event.preventDefault();
     gallery.innerHTML = "";
+    selectImage(event);
     current_page = 1;
     loader.classList.remove("is-hidden");
     loadMoreBtn.classList.add('is-hidden');
@@ -115,6 +124,7 @@ function onSubmit(event) {
             gallery.insertAdjacentHTML("beforeend", markup);
             imageLightbox.refresh();
             loadMoreBtn.classList.remove('is-hidden');
+            endListNotification(data, current_page);
             searchForm.reset();
         })
         .catch(error => {
