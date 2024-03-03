@@ -16,14 +16,6 @@ const imageLightbox = new SimpleLightbox('.gallery .gallery-link', {
 let current_page;
 let current_query;
 
-function selectImage(event) {
-    event.preventDefault();
-    const { className } = event.target;
-    if (className !== "gallery-image") {
-        return;
-    }
-}
-
 function endListNotification(data, current_page) {
     const currentHitsAmount = current_page * 15;
                 if (data.totalHits <= currentHitsAmount) {
@@ -43,7 +35,6 @@ searchForm.addEventListener("submit", onSubmit);
 
 loadMoreBtn.addEventListener('click', event => { 
     loader.classList.remove('is-hidden');
-    selectImage(event);
     current_page++;
     fetchImages(current_query, 15, current_page)
         .then(data => {
@@ -79,7 +70,6 @@ loadMoreBtn.addEventListener('click', event => {
 function onSubmit(event) {
     event.preventDefault();
     gallery.innerHTML = "";
-    selectImage(event);
     current_page = 1;
     loader.classList.remove("is-hidden");
     loadMoreBtn.classList.add('is-hidden');
@@ -106,7 +96,6 @@ function onSubmit(event) {
     fetchImages(query, 15, 1)
         .then(data => {
             const images = data.hits;
-
             if (images.length === 0) {
                 iziToast.error({
                     message: 'Sorry, there are no images matching your search query. Please try again!',
